@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">photoviewer</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="app_name">Photo Viewer demo App</string>
+
+    <string name="title_activity_main">Albums</string>
+
+    <string name="thumb">Thumbnail</string>
+
+    <string name="recycler_no_data">Pull to refresh</string>
+
 </resources>
