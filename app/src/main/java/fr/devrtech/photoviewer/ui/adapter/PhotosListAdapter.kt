@@ -1,6 +1,7 @@
 package fr.devrtech.photoviewer.ui.adapter
 
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,9 @@ import kotlinx.android.synthetic.main.item_photo.view.*
 class PhotosListAdapter(private val photosList: List<Photo>) :
     RecyclerView.Adapter<PhotosListAdapter.PhotoViewHolder>() {
 
+    // TAGs
+    private val TAG = PhotosListAdapter::class.java.getSimpleName()
+
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -32,9 +36,10 @@ class PhotosListAdapter(private val photosList: List<Photo>) :
         val item: Photo = photosList.get(position)
         // Fill view with content
         holder.titleTextView.text = item.title
-        if (!TextUtils.isEmpty(item.thumbUrl)) {
+        Log.d(TAG, "loading thumb url : " + item.thumbnailUrl)
+        if (!TextUtils.isEmpty(item.thumbnailUrl)) {
             // Image loading
-            Picasso.with(holder.view.context).load(item.thumbUrl).into(holder.thumbImageView)
+            Picasso.with(holder.view.context).load(item.thumbnailUrl).into(holder.thumbImageView)
         }
     }
 

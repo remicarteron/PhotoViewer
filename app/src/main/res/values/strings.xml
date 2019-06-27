@@ -1,7 +1,8 @@
 <resources>
+
     <string name="app_name">Photo Viewer demo App</string>
 
-    <string name="title_activity_main">Albums</string>
+    <string name="title_activity_main">All collection</string>
 
     <string name="thumb">Thumbnail</string>
 

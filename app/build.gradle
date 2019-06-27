@@ -12,8 +12,8 @@ android {
         // 14 = ICS (imposed by the demo app)
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 3
-        versionName "0.3"
+        versionCode 6
+        versionName "0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,6 +22,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions 'default'
+    productFlavors {
+        prod {
+            dimension 'default'
+            buildConfigField "String", "CONF_API_BASE_URL", '"http://jsonplaceholder.typicode.com/"'
+        }
+        dev {
+            dimension 'default'
+            applicationIdSuffix '.dev'
+            buildConfigField "String", "CONF_API_BASE_URL", '"http://jsonplaceholder.typicode.com/"'
+        }
+    }
+
 }
 
 dependencies {
@@ -42,5 +55,15 @@ dependencies {
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
+
+    // Retrofit  (HTTP client)
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+
+    // RX 2
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
 }

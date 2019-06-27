@@ -15,6 +15,4 @@ interface PhotosDAO {
 
     fun clearPhotos()
 
-    fun loadPhotos()
-
 }

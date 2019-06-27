@@ -9,12 +9,12 @@ class Photo() : Serializable {
 
 
 
-    constructor(id: Long?, albumId: Long?, title: String?, url: String?, thumbUrl: String?) : this() {
+    constructor(id: Long?, albumId: Long?, title: String?, url: String?, thumbnailUrl: String?) : this() {
         this.id = id
         this.albumId = albumId
         this.title = title
         this.url = url
-        this.thumbUrl = thumbUrl
+        this.thumbnailUrl = thumbnailUrl
     }
 
     var id: Long? = null
@@ -25,6 +25,6 @@ class Photo() : Serializable {
 
     var url: String? = null
 
-    var thumbUrl: String? = null
+    var thumbnailUrl: String? = null
 
 }
