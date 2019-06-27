@@ -1,11 +1,13 @@
 package fr.devrtech.photoviewer.ui.adapter
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import fr.devrtech.photoviewer.R
 import fr.devrtech.photoviewer.core.entity.Photo
 import kotlinx.android.synthetic.main.item_photo.view.*
@@ -30,7 +32,10 @@ class PhotosListAdapter(private val photosList: List<Photo>) :
         val item: Photo = photosList.get(position)
         // Fill view with content
         holder.titleTextView.text = item.title
-        // TODO fill thumb
+        if (!TextUtils.isEmpty(item.thumbUrl)) {
+            // Image loading
+            Picasso.with(holder.view.context).load(item.thumbUrl).into(holder.thumbImageView)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
