@@ -1,6 +1,8 @@
 package fr.devrtech.photoviewer.ui.activity
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +26,11 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
 
     // Current photos
-    var photos: List<Photo>? = null
+    private var photos: List<Photo>? = null
+
+
+    // Lock for loading only once a time
+    private var loadingLock = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +39,30 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         initUI()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the nav_drawer; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
     override fun onResume() {
         super.onResume()
         fillData()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.getItemId()
+        when (id) {
+            R.id.action_refresh -> {
+                onRefresh()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onInteractorStart() {
+        loadingLock = true
     }
 
     override fun onRefresh() {
@@ -48,20 +75,21 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     }
 
     override fun onError(throwable: Throwable) {
-        Toast.makeText(this, throwable.message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, throwable.message.toString(), Toast.LENGTH_LONG).show()
+        Snackbar.make(pv_main_fab, throwable.message.toString(), Snackbar.LENGTH_LONG).show()
     }
 
     override fun onFinally() {
         pv_main_swipe.isRefreshing = false
+        loadingLock = false
     }
 
 
     fun initUI() {
         pv_main_toolbar.setTitle(R.string.title_activity_main)
         setSupportActionBar(pv_main_toolbar)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        pv_main_fab.setOnClickListener { view ->
+            onRefresh()
         }
         // RecyclerView setup
         val thumbWidthDp = getResources().getDimension(R.dimen.thumb_size) / getResources().getDisplayMetrics().density
@@ -75,8 +103,13 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         if (!pv_main_swipe.isRefreshing) {
             pv_main_swipe.isRefreshing = true;
         }
-        // Load photos
-        PhotosLoaderInteractor(PhotoViewerApp.getPhotosLoader(), PhotoViewerApp.getPhotosDAO(), this).execute()
+        if (!loadingLock) {
+            Snackbar.make(pv_main_fab, R.string.loading, Snackbar.LENGTH_SHORT).show()
+            // Load photos
+            PhotosLoaderInteractor(PhotoViewerApp.getPhotosLoader(), PhotoViewerApp.getPhotosDAO(), this).execute()
+        } else {
+            Snackbar.make(pv_main_fab, R.string.already_loading, Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     fun fillData() {

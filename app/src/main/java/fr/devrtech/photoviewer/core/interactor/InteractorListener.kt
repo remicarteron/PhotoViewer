@@ -6,6 +6,10 @@ package fr.devrtech.photoviewer.core.interactor
  */
 interface InteractorListener {
 
+    /**
+     * Called when interactor starts
+     */
+    fun onInteractorStart()
 
     /**
      * Called when all is success

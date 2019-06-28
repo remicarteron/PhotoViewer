@@ -14,8 +14,8 @@ class PhotosLoaderInteractor(
     private var listener: InteractorListener?
 ) {
 
-
     fun execute() {
+        listener?.onInteractorStart()
         var disposable = loaderClient.loadAllPhotos()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
