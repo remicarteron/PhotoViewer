@@ -1,12 +1,13 @@
 package fr.devrtech.photoviewer.core.entity
 
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 import java.io.Serializable
 
 /**
  * Model for photo item
  */
-class Photo() : Serializable {
-
+open class Photo() : Serializable, RealmObject() {
 
 
     constructor(id: Long?, albumId: Long?, title: String?, url: String?, thumbnailUrl: String?) : this() {
@@ -17,6 +18,8 @@ class Photo() : Serializable {
         this.thumbnailUrl = thumbnailUrl
     }
 
+
+    @PrimaryKey
     var id: Long? = null
 
     var albumId: Long? = null

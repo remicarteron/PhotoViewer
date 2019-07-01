@@ -3,8 +3,10 @@ package fr.devrtech.photoviewer
 import android.app.Application
 import fr.devrtech.photoviewer.core.dao.BasicPhotosDAOClient
 import fr.devrtech.photoviewer.core.dao.PhotosDAO
+import fr.devrtech.photoviewer.core.dao.RealmPhotosDAOClient
 import fr.devrtech.photoviewer.core.interactor.PhotosLoader
 import fr.devrtech.photoviewer.core.net.PhotosWebServiceClient
+import io.realm.Realm
 
 /**
  * Application class for global data / configurations
@@ -46,9 +48,11 @@ class PhotoViewerApp() : Application() {
     override fun onCreate() {
         super.onCreate()
         APP_INSTANCE = this;
-        photosDAOClient = BasicPhotosDAOClient()
+        photosDAOClient = RealmPhotosDAOClient()
 //        photoLoaderClient = photosDAOClient as BasicPhotosDAOClient
         photoLoaderClient = PhotosWebServiceClient()
+        // Initialize Realm (just once per application)
+        Realm.init(this)
     }
 
 }

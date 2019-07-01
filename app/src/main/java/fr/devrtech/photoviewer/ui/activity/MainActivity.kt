@@ -19,6 +19,7 @@ import fr.devrtech.photoviewer.ui.adapter.PhotosListAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
+
 /**
  * Main activty of the app (viewing all photo in a recyclerview)
  */
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initUI()
+        // Load offline data
+        photos = PhotoViewerApp.getPhotosDAO().getAllPhotos()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -101,7 +104,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
 
     fun refreshData() {
         if (!pv_main_swipe.isRefreshing) {
-            pv_main_swipe.isRefreshing = true;
+            pv_main_swipe.isRefreshing = true
         }
         if (!loadingLock) {
             Snackbar.make(pv_main_fab, R.string.loading, Snackbar.LENGTH_SHORT).show()
