@@ -16,8 +16,8 @@ android {
         // 14 = ICS (imposed by the demo app)
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 8
-        versionName "0.5"
+        versionCode 9
+        versionName "0.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -38,7 +38,21 @@ android {
             buildConfigField "String", "CONF_API_BASE_URL", '"http://jsonplaceholder.typicode.com/"'
         }
     }
-
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == "com.android.support") {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion "${targetSdk}.+"
+                }
+            }
+            if (requested.group == "androidx") {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion "${targetSdk}.+"
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -67,7 +81,14 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
     // RX 2
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    // Room (kotlin)
+    def room_version = "2.2.0-alpha01" // 2.1.0 for latest stable version
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.room:room-testing:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
 
 }

@@ -2,6 +2,8 @@ package fr.devrtech.photoviewer.core.dao
 
 import fr.devrtech.photoviewer.core.entity.Photo
 import fr.devrtech.photoviewer.core.interactor.PhotosLoader
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Observable
 
 
@@ -15,25 +17,28 @@ class BasicPhotosDAOClient : PhotosDAO, PhotosLoader {
     val photos = ArrayList<Photo>()
 
 
-    override fun getAllPhotos(): List<Photo> {
+    override fun getAllPhotos(): Flowable<List<Photo>> {
 //        var end = 30
 //        if (photos.size < 30) {
 //            end = photos.size
 //        }
 //        return photos.subList(0, end)
-        return photos
+        return Flowable.just(photos)
     }
 
-    override fun storePhoto(photo: Photo) {
+    override fun storePhoto(photo: Photo) : Completable {
         photos.add(photo)
+        return Completable.complete()
     }
 
-    override fun storeAllPhotos(photos: List<Photo>) {
+    override fun storeAllPhotos(photos: List<Photo>)  : Completable{
         this.photos.addAll(photos)
+        return Completable.complete()
     }
 
-    override fun clearPhotos() {
+    override fun clearPhotos() :Completable {
         photos.clear()
+        return Completable.complete()
     }
 
 

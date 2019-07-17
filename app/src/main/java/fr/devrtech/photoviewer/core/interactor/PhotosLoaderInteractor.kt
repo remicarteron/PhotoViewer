@@ -18,11 +18,14 @@ class PhotosLoaderInteractor(
         listener?.onInteractorStart()
         var disposable = loaderClient.loadAllPhotos()
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .unsubscribeOn(Schedulers.io())
+            .flatMapCompletable {
+                photosDAO.clearPhotos()
+                    .andThen(photosDAO.storeAllPhotos(it))
+            }
+            .observeOn(AndroidSchedulers.mainThread())
             .doFinally({ listener?.onFinally() })
-            .subscribe({ response ->
-                photosDAO.storeAllPhotos(response)
+            .subscribe({
                 listener?.onSuccess()
             }, { error ->
                 error.printStackTrace()

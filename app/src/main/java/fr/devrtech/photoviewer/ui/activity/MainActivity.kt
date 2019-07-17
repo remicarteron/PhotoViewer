@@ -16,6 +16,8 @@ import fr.devrtech.photoviewer.core.interactor.InteractorListener
 import fr.devrtech.photoviewer.core.interactor.PhotosLoaderInteractor
 import fr.devrtech.photoviewer.core.utils.RecyclerUtils
 import fr.devrtech.photoviewer.ui.adapter.PhotosListAdapter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -39,7 +41,11 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
         setContentView(R.layout.activity_main)
         initUI()
         // Load offline data
-        photos = PhotoViewerApp.getPhotosDAO().getAllPhotos()
+        val disposable = PhotoViewerApp.getPhotosDAO().getAllPhotos()
+            .subscribe({
+                photos = it
+                runOnUiThread({ fillData() })
+            }, { onError(it) })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -73,8 +79,14 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     }
 
     override fun onSuccess() {
-        photos = PhotoViewerApp.getPhotosDAO().getAllPhotos()
-        fillData()
+        // Load offline data
+        val disposable = PhotoViewerApp.getPhotosDAO().getAllPhotos()
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                photos = it
+                fillData()
+            }, { onError(it) })
     }
 
     override fun onError(throwable: Throwable) {
@@ -116,13 +128,15 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener, 
     }
 
     fun fillData() {
-        if (photos != null && photos!!.size > 0) {
-            pv_main_empty.visibility = View.GONE
-            pv_main_recycler.visibility = View.VISIBLE
-            pv_main_recycler.adapter = PhotosListAdapter(photos!!)
-        } else {
-            pv_main_empty.visibility = View.VISIBLE
-            pv_main_recycler.visibility = View.GONE
+        synchronized(this) {
+            if (photos != null && photos!!.size > 0) {
+                pv_main_empty.visibility = View.GONE
+                pv_main_recycler.visibility = View.VISIBLE
+                pv_main_recycler.adapter = PhotosListAdapter(photos!!)
+            } else {
+                pv_main_empty.visibility = View.VISIBLE
+                pv_main_recycler.visibility = View.GONE
+            }
         }
     }
 

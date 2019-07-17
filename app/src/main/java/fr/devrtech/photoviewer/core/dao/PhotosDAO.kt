@@ -1,18 +1,28 @@
 package fr.devrtech.photoviewer.core.dao
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import fr.devrtech.photoviewer.core.entity.Photo
+import io.reactivex.Completable
+import io.reactivex.Flowable
 
 /**
  * DAO interface
  */
+@Dao
 interface PhotosDAO {
 
-    fun getAllPhotos(): List<Photo>
+    @Query("SELECT * FROM Photo")
+    fun getAllPhotos(): Flowable<List<Photo>>
 
-    fun storePhoto(photo: Photo)
+    @Insert
+    fun storePhoto(photo: Photo): Completable
 
-    fun storeAllPhotos(photos: List<Photo>)
+    @Insert
+    fun storeAllPhotos(photos: List<Photo>): Completable
 
-    fun clearPhotos()
+    @Query("DELETE FROM Photo")
+    fun clearPhotos(): Completable
 
 }
